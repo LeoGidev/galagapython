@@ -135,11 +135,12 @@ while running:
         score += 10
 
     # Comprobación de colisiones entre el jugador y los enemigos
-    hits = pygame.sprite.spritecollide(player, enemies, False)
+    hits = pygame.sprite.spritecollide(player, enemies, True)
     if hits:
         player.lives -= 1  # Restar una vida al jugador
         if player.lives == 0:
-            running = False  # Si el jugador se queda sin vidas, terminar el juego
+            print('hola')
+            #running = False  # Si el jugador se queda sin vidas, terminar el juego
         else:
             # Reiniciar la posición del jugador
             player.rect.centerx = 400
