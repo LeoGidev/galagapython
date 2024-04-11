@@ -1,19 +1,22 @@
 import pygame
 import random
+import os
 
 # Definición de colores
 BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+
+# Inicialización de Pygame y creación de la ventana
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("Galaxian")
 
 # Clase para la nave del jugador
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface([50, 50])  # Tamaño de la nave
-        self.image.fill(WHITE)  # Color de la nave
+        # Cargar imagen de la nave
+        self.image = pygame.image.load(os.path.join('img', 'nave.png')).convert()
+        self.image.set_colorkey(BLACK)  # Establecer color transparente
         self.rect = self.image.get_rect()
         self.rect.centerx = 400  # Posición inicial x centrada
         self.rect.bottom = 600  # Posición inicial y en la parte inferior de la pantalla
@@ -37,8 +40,9 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        # Cargar imagen del enemigo
         self.image = pygame.Surface([30, 30])  # Tamaño del enemigo
-        self.image.fill(WHITE)  # Color del enemigo
+        self.image.fill(BLACK)  # Color del enemigo (se usará solo para la detección de colisiones)
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 750)  # Posición inicial x aleatoria
         self.rect.y = random.randrange(-100, -40)  # Posición inicial y aleatoria
@@ -57,7 +61,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.Surface([4, 10])  # Tamaño del disparo
-        self.image.fill(RED)  # Color del disparo
+        self.image.fill(BLACK)  # Color del disparo (se usará solo para la detección de colisiones)
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
@@ -68,11 +72,6 @@ class Bullet(pygame.sprite.Sprite):
         # Eliminar el disparo si sale de la pantalla
         if self.rect.bottom < 0:
             self.kill()
-
-# Inicialización de Pygame y creación de la ventana
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Galaxian")
 
 # Lista de todos los sprites
 all_sprites = pygame.sprite.Group()
@@ -88,6 +87,9 @@ for i in range(8):
     enemy = Enemy()
     all_sprites.add(enemy)
     enemies.add(enemy)
+
+# Cargar imagen de fondo
+background = pygame.image.load(os.path.join('img', 'universo.jpg')).convert()
 
 # Bucle principal del juego
 running = True
@@ -120,12 +122,15 @@ while running:
     if hits:
         running = False  # Si hay colisión, el juego termina
 
+    # Dibujar el fondo
+    screen.blit(background, (0, 0))
+
     # Dibujar todos los sprites
-    screen.fill(BLACK)
     all_sprites.draw(screen)
 
     pygame.display.flip()
     clock.tick(60)
 
 pygame.quit()
+
 
