@@ -6,11 +6,6 @@ import os
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
-CYAN = (0, 255, 255)
-MAGENTA = (255, 0, 255)
 
 # Inicialización de Pygame y creación de la ventana
 pygame.init()
@@ -29,6 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.centerx = 400  # Posición inicial x centrada
         self.rect.bottom = 600  # Posición inicial y en la parte inferior de la pantalla
         self.speed = 5
+        self.lives = 3  # Inicializar contador de vidas del jugador
 
     def update(self):
         # Control de movimiento horizontal de la nave con las teclas de flecha
@@ -65,7 +61,6 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x = random.randrange(0, 750)
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 3)
-
 
 # Clase para los disparos
 class Bullet(pygame.sprite.Sprite):
@@ -108,6 +103,9 @@ score = 0
 # Fuente para mostrar la puntuación
 font = pygame.font.Font(None, 36)
 
+# Mensaje de Game Over
+game_over_font = pygame.font.Font(None, 72)
+
 # Bucle principal del juego
 running = True
 clock = pygame.time.Clock()
@@ -139,7 +137,13 @@ while running:
     # Comprobación de colisiones entre el jugador y los enemigos
     hits = pygame.sprite.spritecollide(player, enemies, False)
     if hits:
-        running = False  # Si hay colisión, el juego termina
+        player.lives -= 1  # Restar una vida al jugador
+        if player.lives == 0:
+            running = False  # Si el jugador se queda sin vidas, terminar el juego
+        else:
+            # Reiniciar la posición del jugador
+            player.rect.centerx = 400
+            player.rect.bottom = 600
 
     # Dibujar el fondo
     screen.blit(background, (0, 0))
@@ -151,9 +155,19 @@ while running:
     score_text = font.render("Score: {}".format(score), True, WHITE)
     screen.blit(score_text, (10, 10))
 
+    # Mostrar vidas del jugador en pantalla
+    lives_text = font.render("Lives: {}".format(player.lives), True, WHITE)
+    screen.blit(lives_text, (10, 50))
+
+    # Si el jugador se queda sin vidas, mostrar mensaje de Game Over
+    if player.lives == 0:
+        game_over_text = game_over_font.render("GAME OVER", True, RED)
+        screen.blit(game_over_text, (250, 250))
+
     pygame.display.flip()
     clock.tick(60)
 
 pygame.quit()
+
 
 
