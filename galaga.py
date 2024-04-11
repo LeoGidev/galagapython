@@ -17,12 +17,15 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface([50, 50])  # Tamaño de la nave
-        self.image.fill(WHITE)  # Color de la nave
         self.rect = self.image.get_rect()
         self.rect.x = 400  # Posición inicial x
         self.rect.y = 550  # Posición inicial y
-         # Dibujar un cuadrado rojo en la nave
-        pygame.draw.rect(self.image, RED, [0, 50, 20, 20])
+
+        # Dibujar la nave (un rectángulo blanco)
+        self.image.fill(WHITE)
+
+        # Dibujar un cuadrado rojo en la nave
+        pygame.draw.rect(self.image, RED, [10, 10, 20, 20])
 
         # Dibujar un círculo verde en la nave
         pygame.draw.circle(self.image, GREEN, (25, 40), 10)
@@ -30,8 +33,11 @@ class Player(pygame.sprite.Sprite):
         # Dibujar un triángulo azul en la nave
         pygame.draw.polygon(self.image, BLUE, [(5, 30), (25, 5), (45, 30)])
 
-        # Asegúrate de cambiar también los valores de rect para que se ajusten a las nuevas dimensiones
+        # Ajustar el rectángulo para que coincida con el tamaño actual de la imagen
         self.rect = self.image.get_rect()
+
+
+
 
     def update(self):
         # Control de movimiento horizontal de la nave con las teclas de flecha
