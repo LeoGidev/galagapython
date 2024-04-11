@@ -70,7 +70,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.Surface([4, 10])  # Tamaño del disparo
-        self.image.fill(BLACK)  # Color del disparo (se usará solo para la detección de colisiones)
+        self.image.fill(RED)  # Color del disparo (se usará solo para la detección de colisiones)
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
