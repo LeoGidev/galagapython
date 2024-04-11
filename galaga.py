@@ -30,7 +30,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.bottom = 600  # Posición inicial y en la parte inferior de la pantalla
         self.speed = 5
 
-
     def update(self):
         # Control de movimiento horizontal de la nave con las teclas de flecha
         keys = pygame.key.get_pressed()
@@ -100,6 +99,12 @@ for i in range(8):
 # Cargar imagen de fondo
 background = pygame.image.load(os.path.join('img', 'universo.jpg')).convert()
 
+# Puntuación del jugador
+score = 0
+
+# Fuente para mostrar la puntuación
+font = pygame.font.Font(None, 36)
+
 # Bucle principal del juego
 running = True
 clock = pygame.time.Clock()
@@ -125,6 +130,8 @@ while running:
         enemy = Enemy()
         all_sprites.add(enemy)
         enemies.add(enemy)
+        # Incrementar la puntuación
+        score += 10
 
     # Comprobación de colisiones entre el jugador y los enemigos
     hits = pygame.sprite.spritecollide(player, enemies, False)
@@ -136,6 +143,10 @@ while running:
 
     # Dibujar todos los sprites
     all_sprites.draw(screen)
+
+    # Mostrar puntuación en pantalla
+    score_text = font.render("Score: {}".format(score), True, WHITE)
+    screen.blit(score_text, (10, 10))
 
     pygame.display.flip()
     clock.tick(60)
