@@ -2,8 +2,15 @@ import pygame
 import random
 
 # Definición de colores
-BLACK = (0, 0, 0)
+
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+CYAN = (0, 255, 255)
+MAGENTA = (255, 0, 255)
 
 # Clase para la nave del jugador
 class Player(pygame.sprite.Sprite):
@@ -14,6 +21,17 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 400  # Posición inicial x
         self.rect.y = 550  # Posición inicial y
+         # Dibujar un cuadrado rojo en la nave
+        pygame.draw.rect(self.image, RED, [0, 50, 20, 20])
+
+        # Dibujar un círculo verde en la nave
+        pygame.draw.circle(self.image, GREEN, (25, 40), 10)
+
+        # Dibujar un triángulo azul en la nave
+        pygame.draw.polygon(self.image, BLUE, [(5, 30), (25, 5), (45, 30)])
+
+        # Asegúrate de cambiar también los valores de rect para que se ajusten a las nuevas dimensiones
+        self.rect = self.image.get_rect()
 
     def update(self):
         # Control de movimiento horizontal de la nave con las teclas de flecha
@@ -33,6 +51,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = random.randrange(0, 750)  # Posición inicial x aleatoria
         self.rect.y = random.randrange(-100, -40)  # Posición inicial y aleatoria
         self.speedy = random.randrange(1, 3)  # Velocidad de movimiento aleatoria
+       
 
     def update(self):
         self.rect.y += self.speedy
