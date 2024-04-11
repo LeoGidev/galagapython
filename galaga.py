@@ -120,6 +120,24 @@ while running:
                 bullet = Bullet(player.rect.centerx, player.rect.top)
                 all_sprites.add(bullet)
                 bullets.add(bullet)
+            elif event.key == pygame.K_r:
+                # Reiniciar el juego si se presiona la tecla R
+                # Reiniciar la posición del jugador
+                player.rect.centerx = 400
+                player.rect.bottom = 600
+                # Reiniciar la puntuación y las vidas
+                score = 0
+                player.lives = 3
+                # Eliminar todos los enemigos y los disparos existentes
+                for enemy in enemies:
+                    enemy.kill()
+                for bullet in bullets:
+                    bullet.kill()
+                # Crear nuevos enemigos
+                for i in range(8):
+                    enemy = Enemy()
+                    all_sprites.add(enemy)
+                    enemies.add(enemy)
 
     # Actualizar todos los sprites
     all_sprites.update()
@@ -139,12 +157,28 @@ while running:
     if hits:
         player.lives -= 1  # Restar una vida al jugador
         if player.lives == 0:
-            print('hola')
-            #running = False  # Si el jugador se queda sin vidas, terminar el juego
-        else:
+            # Si el jugador se queda sin vidas, mostrar mensaje de Game Over
+            game_over_text = game_over_font.render("GAME OVER", True, RED)
+            screen.blit(game_over_text, (250, 250))
+            pygame.display.flip()
+            # Esperar unos segundos antes de reiniciar el juego
+            pygame.time.delay(3000)
             # Reiniciar la posición del jugador
             player.rect.centerx = 400
             player.rect.bottom = 600
+            # Reiniciar la puntuación y las vidas
+            score = 0
+            player.lives = 3
+            # Eliminar todos los enemigos y los disparos existentes
+            for enemy in enemies:
+                enemy.kill()
+            for bullet in bullets:
+                bullet.kill()
+            # Crear nuevos enemigos
+            for i in range(8):
+                enemy = Enemy()
+                all_sprites.add(enemy)
+                enemies.add(enemy)
 
     # Dibujar el fondo
     screen.blit(background, (0, 0))
@@ -160,15 +194,11 @@ while running:
     lives_text = font.render("Lives: {}".format(player.lives), True, WHITE)
     screen.blit(lives_text, (10, 50))
 
-    # Si el jugador se queda sin vidas, mostrar mensaje de Game Over
-    if player.lives == 0:
-        game_over_text = game_over_font.render("GAME OVER", True, RED)
-        screen.blit(game_over_text, (250, 250))
-
     pygame.display.flip()
     clock.tick(60)
 
 pygame.quit()
+
 
 
 
