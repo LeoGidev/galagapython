@@ -2,54 +2,36 @@ import pygame
 import random
 
 # Definición de colores
-
-WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
-CYAN = (0, 255, 255)
-MAGENTA = (255, 0, 255)
 
+# Clase para la nave del jugador
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface([50, 50])  # Tamaño de la nave
+        self.image.fill(WHITE)  # Color de la nave
         self.rect = self.image.get_rect()
-        self.rect.x = 400  # Posición inicial x
-        self.rect.y = 550  # Posición inicial y
-
-        # Dibujar la nave (un rectángulo blanco)
-        self.image.fill(WHITE)
-
-        # Dibujar un cuadrado rojo en la nave
-        pygame.draw.rect(self.image, RED, [10, 10, 20, 20])
-
-        # Dibujar un círculo verde en la nave
-        pygame.draw.circle(self.image, GREEN, (25, 40), 10)
-
-        # Dibujar un triángulo azul en la nave
-        pygame.draw.polygon(self.image, BLUE, [(5, 30), (25, 5), (45, 30)])
-
-        # Ajustar el rectángulo para que coincida con el tamaño actual de la imagen
-        self.rect = self.image.get_rect()
-
-        # Ajustar la posición de la nave para que esté en la parte inferior central de la pantalla
-        self.rect.centerx = 400  # Posición x centrada
-        self.rect.bottom = 600  # Posición y en la parte inferior de la pantalla
-
-
-
-
+        self.rect.centerx = 400  # Posición inicial x centrada
+        self.rect.bottom = 600  # Posición inicial y en la parte inferior de la pantalla
+        self.speed = 5
 
     def update(self):
         # Control de movimiento horizontal de la nave con las teclas de flecha
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            self.rect.x -= 5
+            self.rect.x -= self.speed
         if keys[pygame.K_RIGHT]:
-            self.rect.x += 5
+            self.rect.x += self.speed
+
+        # Limitar el movimiento dentro de la pantalla
+        if self.rect.left < 0:
+            self.rect.left = 0
+        elif self.rect.right > 800:
+            self.rect.right = 800
 
 # Clase para los enemigos
 class Enemy(pygame.sprite.Sprite):
@@ -61,7 +43,6 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = random.randrange(0, 750)  # Posición inicial x aleatoria
         self.rect.y = random.randrange(-100, -40)  # Posición inicial y aleatoria
         self.speedy = random.randrange(1, 3)  # Velocidad de movimiento aleatoria
-       
 
     def update(self):
         self.rect.y += self.speedy
@@ -71,6 +52,23 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 3)
 
+# Clase para los disparos
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface([4, 10])  # Tamaño del disparo
+        self.image.fill(RED)  # Color del disparo
+        self.rect = self.image.get_rect()
+        self.rect.centerx = x
+        self.rect.bottom = y
+        self.speed = -10  # Velocidad de movimiento hacia arriba
+
+    def update(self):
+        self.rect.y += self.speed
+        # Eliminar el disparo si sale de la pantalla
+        if self.rect.bottom < 0:
+            self.kill()
+
 # Inicialización de Pygame y creación de la ventana
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -79,6 +77,7 @@ pygame.display.set_caption("Galaxian")
 # Lista de todos los sprites
 all_sprites = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 
 # Crear el jugador
 player = Player()
@@ -98,9 +97,23 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                # Crear un nuevo disparo y agregarlo a la lista de sprites
+                bullet = Bullet(player.rect.centerx, player.rect.top)
+                all_sprites.add(bullet)
+                bullets.add(bullet)
 
     # Actualizar todos los sprites
     all_sprites.update()
+
+    # Comprobación de colisiones entre los disparos y los enemigos
+    hits = pygame.sprite.groupcollide(enemies, bullets, True, True)
+    for hit in hits:
+        # Crear nuevos enemigos para reemplazar los eliminados
+        enemy = Enemy()
+        all_sprites.add(enemy)
+        enemies.add(enemy)
 
     # Comprobación de colisiones entre el jugador y los enemigos
     hits = pygame.sprite.spritecollide(player, enemies, False)
@@ -115,3 +128,4 @@ while running:
     clock.tick(60)
 
 pygame.quit()
+
