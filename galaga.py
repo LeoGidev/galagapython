@@ -12,7 +12,6 @@ YELLOW = (255, 255, 0)
 CYAN = (0, 255, 255)
 MAGENTA = (255, 0, 255)
 
-# Clase para la nave del jugador
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -35,6 +34,11 @@ class Player(pygame.sprite.Sprite):
 
         # Ajustar el rectángulo para que coincida con el tamaño actual de la imagen
         self.rect = self.image.get_rect()
+
+        # Ajustar la posición de la nave para que esté en la parte inferior central de la pantalla
+        self.rect.centerx = 400  # Posición x centrada
+        self.rect.bottom = 600  # Posición y en la parte inferior de la pantalla
+
 
 
 
