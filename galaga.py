@@ -48,9 +48,11 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # Cargar imagen del enemigo
-        self.image = pygame.Surface([30, 30])  # Tamaño del enemigo
-        self.image.fill(WHITE)  # Color del enemigo (se usará solo para la detección de colisiones)
+        # Cargar imágenes de asteroides y seleccionar una al azar
+        asteroid_images = ['asteroide1.png', 'asteroide2.png']
+        asteroid_image = random.choice(asteroid_images)
+        self.image = pygame.image.load(os.path.join('img', asteroid_image)).convert_alpha()
+        self.image = pygame.transform.scale(self.image, (50, 50))  # Redimensionar imagen a 50x50 píxeles
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 750)  # Posición inicial x aleatoria
         self.rect.y = random.randrange(-100, -40)  # Posición inicial y aleatoria
@@ -63,6 +65,7 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x = random.randrange(0, 750)
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 3)
+
 
 # Clase para los disparos
 class Bullet(pygame.sprite.Sprite):
