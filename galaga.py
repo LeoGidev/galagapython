@@ -3,7 +3,14 @@ import random
 import os
 
 # Definición de colores
+WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+CYAN = (0, 255, 255)
+MAGENTA = (255, 0, 255)
 
 # Inicialización de Pygame y creación de la ventana
 pygame.init()
@@ -14,13 +21,15 @@ pygame.display.set_caption("Galaxian")
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # Cargar imagen de la nave
-        self.image = pygame.image.load(os.path.join('img', 'nave.png')).convert()
+        # Cargar imagen de la nave y ajustar su tamaño
+        original_image = pygame.image.load(os.path.join('img', 'nave.png')).convert()
+        self.image = pygame.transform.scale(original_image, (100, 100))  # Tamaño de la nave (100x100 píxeles)
         self.image.set_colorkey(BLACK)  # Establecer color transparente
         self.rect = self.image.get_rect()
         self.rect.centerx = 400  # Posición inicial x centrada
         self.rect.bottom = 600  # Posición inicial y en la parte inferior de la pantalla
         self.speed = 5
+
 
     def update(self):
         # Control de movimiento horizontal de la nave con las teclas de flecha
@@ -42,7 +51,7 @@ class Enemy(pygame.sprite.Sprite):
         super().__init__()
         # Cargar imagen del enemigo
         self.image = pygame.Surface([30, 30])  # Tamaño del enemigo
-        self.image.fill(BLACK)  # Color del enemigo (se usará solo para la detección de colisiones)
+        self.image.fill(WHITE)  # Color del enemigo (se usará solo para la detección de colisiones)
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, 750)  # Posición inicial x aleatoria
         self.rect.y = random.randrange(-100, -40)  # Posición inicial y aleatoria
